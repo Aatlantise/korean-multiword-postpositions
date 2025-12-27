@@ -1,25 +1,60 @@
-~에 의한 (by)
-~에 대한 (about)
-~에 관한 (about)
+Root       | Total  | Variety  | Fossil-Ratio | Status
+-----------------------------------------------------------------
+분류         | 557640 | 487      | 0.00         | Regular Verb/Noun
+           | 230067 | 295      | 0.05         | Regular Verb/Noun
+위          | 109303 | 2684     | 0.33         | MWP Candidate
+대          | 98023  | 299      | 0.86         | MWP Candidate
+사용         | 96576  | 976      | 0.11         | Regular Verb/Noun
+말          | 67261  | 2289     | 0.01         | Regular Verb/Noun
+전          | 61120  | 4276     | 0.01         | Regular Verb/Noun
+시작         | 59213  | 692      | 0.10         | Regular Verb/Noun
+의          | 53815  | 1447     | 0.90         | MWP Candidate
+방송         | 51386  | 2176     | 0.00         | Regular Verb/Noun
+기록         | 48143  | 915      | 0.13         | Regular Verb/Noun
+다음         | 46331  | 2661     | 0.00         | Regular Verb/Noun
+인          | 44574  | 1952     | 0.32         | MWP Candidate
+활동         | 43431  | 872      | 0.03         | Regular Verb/Noun
+일          | 42721  | 1335     | 0.01         | Regular Verb/Noun
+대표         | 40318  | 1655     | 0.01         | Regular Verb/Noun
+통          | 38506  | 400      | 0.94         | MWP Candidate
+남          | 35504  | 2236     | 0.00         | Regular Verb/Noun
+가          | 35095  | 438      | 0.02         | Regular Verb/Noun
+포함         | 34226  | 552      | 0.29         | Regular Verb/Noun
+가능         | 34172  | 800      | 0.01         | Regular Verb/Noun
+위치         | 33959  | 788      | 0.35         | MWP Candidate
+이상         | 33141  | 3890     | 0.00         | Regular Verb/Noun
+사망         | 32196  | 647      | 0.05         | Regular Verb/Noun
+감독         | 31841  | 1801     | 0.00         | Regular Verb/Noun
+속          | 26990  | 1722     | 0.11         | Regular Verb/Noun
+이용         | 26954  | 549      | 0.44         | MWP Candidate
+발표         | 25151  | 427      | 0.18         | Regular Verb/Noun
+관          | 22851  | 879      | 0.67         | MWP Candidate
+공격         | 22434  | 652      | 0.11         | Regular Verb/Noun
+설치         | 22208  | 579      | 0.12         | Regular Verb/Noun
+참가         | 20953  | 486      | 0.13         | Regular Verb/Noun
+졸업         | 18558  | 402      | 0.13         | Regular Verb/Noun
+참여         | 18340  | 592      | 0.19         | Regular Verb/Noun
+비          | 17134  | 458      | 0.37         | MWP Candidate
+진출         | 16717  | 471      | 0.12         | Regular Verb/Noun
+수상         | 16483  | 887      | 0.15         | Regular Verb/Noun
+대신         | 16213  | 4524     | 0.11         | Regular Verb/Noun
+차지         | 15101  | 159      | 0.22         | Regular Verb/Noun
+유지         | 14760  | 570      | 0.12         | Regular Verb/Noun
+당          | 14607  | 1162     | 0.11         | Regular Verb/Noun
+제공         | 14597  | 385      | 0.13         | Regular Verb/Noun
+유명         | 14381  | 568      | 0.10         | Regular Verb/Noun
+발매         | 13614  | 414      | 0.12         | Regular Verb/Noun
+제외         | 12293  | 227      | 0.37         | MWP Candidate
+도입         | 12064  | 449      | 0.16         | Regular Verb/Noun
+요구         | 11950  | 356      | 0.12         | Regular Verb/Noun
+비롯         | 11886  | 188      | 0.80         | MWP Candidate
+실시         | 11699  | 357      | 0.15         | Regular Verb/Noun
+데뷔         | 11437  | 346      | 0.13         | Regular Verb/Noun
+피          | 11262  | 922      | 0.11         | Regular Verb/Noun
+인정         | 11063  | 298      | 0.10         | Regular Verb/Noun
+향          | 10650  | 399      | 0.33         | MWP Candidate
+거주         | 10388  | 280      | 0.41         | MWP Candidate
+담당         | 10054  | 580      | 0.11         | Regular Verb/Noun
+출전         | 10020  | 339      | 0.20         | Regular Verb/Noun
 
-~에 처한 (in; under the situation of)
-
-~을 향한 (towards)
-~을 위한 (for)
-~을 통한 (via)
-
-
-~에 근거한 (according to)
-~에 기반한 (based on)
-~를 비롯한 (such as)
-~를 위시한 (such as)
-~에 의거한 (according to; based on)
-~에 한한 (limited to)
-~에 취한 (on; under the influence on)
-~에 속한 (in)
-~에 임한 (up to)
-~에 반한 (against)
-
-~로 인한 (because)
-
-~에 따르면 (according to; "if [you] follow ...")
+Process finished with exit code 0

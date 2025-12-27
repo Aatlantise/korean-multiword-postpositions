@@ -1,10 +1,9 @@
 import os
-import re
-from konlpy.tag import Mecab
-from datasets import load_dataset, load_from_disk
 from collections import defaultdict
+from konlpy.tag import Mecab
+from datasets import load_from_disk, load_dataset
+import json
 
-# Initialize MeCab
 mecab = Mecab()
 
 
@@ -15,66 +14,100 @@ def load_iterable_data():
     return load_from_disk('data_cache').to_iterable_dataset(num_shards=1024)
 
 
-def analyze_mwp_candidates(dataset, limit_docs=1000):
-    """
-    Returns two dictionaries:
-    - candidates: frequency of { (particle, root): count }
-    - negatives: frequency of { root_with_shikida: count }
-    """
-    candidates = defaultdict(int)
-    shikida_usage = defaultdict(int)
-    examples = defaultdict(list)
+def analyze_lexicalization(dataset, limit_docs=100000):
+    # root -> {next_morph: count}
+    root_stats = defaultdict(lambda: defaultdict(int))
+    # root -> count of occurrences in the MWP pattern (e.g., '에 ... 한')
+    mwp_pattern_count = defaultdict(int)
 
-    print(f"Processing {limit_docs} documents...")
+    print(f"Analyzing {limit_docs} documents for fossilization patterns...")
 
     for i, entry in enumerate(dataset):
         if i >= limit_docs: break
+        pos = mecab.pos(entry['text'])
 
-        text = entry['text']
-        pos = mecab.pos(text)
+
 
         for j in range(len(pos) - 2):
-            # 1. Search for: [Particle] + [Root] + [한/ㄴ/은]
-            # Particles: 에(JKB), 을/를(JKO), 로(JKB)
-            if pos[j][1] in ['JKB', 'JKO'] and pos[j][0] in ['에', '을', '를', '로']:
-                # Look at the next morph (The root) and the one after (The ending)
-                root = pos[j + 1][0]
-                ending = pos[j + 2][0]
-                ending_tag = pos[j + 2][1]
+            if j == 0:
+                continue
+            root, tag = pos[j]
+            josa = ""
+            next_tag = ""
 
-                if ending == '한' or (ending_tag == 'ETM' and 'ㄴ' in ending):
-                    phrase = f"{pos[j][0]} {root}{ending}"
-                    candidates[(pos[j][0], root)] += 1
-                    if len(examples[phrase]) < 2:
-                        examples[phrase].append(entry['title'])
+            # VV ETM/EC
+            if tag == "VV" and len(root) >= 1:
+                prev_morph, prev_tag = pos[j - 1]
+                next_morph, next_tag = pos[j + 1]
+                eomi = next_morph
+                if prev_tag[0] == "J" and next_tag in ["ETM", "EC"]:
+                    josa = prev_morph
 
-            # 2. Negative Constraint: Search for Root + 시키다 (XSV)
-            # This helps identify if the root is a productive verb
-            if pos[j + 1][1] == 'XSV' and pos[j + 1][0].startswith('시키'):
-                root_potential = pos[j][0]
-                shikida_usage[root_potential] += 1
+            # VV+ETM / VV+EC
+            elif tag in ["VV+ETM", "VV+EC"] and len(root) >= 1:
+                prev_morph, prev_tag = pos[j - 1]
+                eomi = root[-1]
+                root = root[:-1]
 
-    return candidates, shikida_usage, examples
+                if prev_tag[0] == "J":
+                    josa = prev_morph
+
+            # NNG/XR XSV/XSA ETM/EC
+            elif tag in ["NNG", "XR"] and len(root) >= 1:
+                prev_morph, prev_tag = pos[j - 1]
+                next_morph, next_tag = pos[j + 1]
+                subsequent_morph, subsequent_tag = pos[j + 2]
+                # check for josa
+                if prev_tag[0] == "J":
+                    josa = prev_morph
+
+                # XSV ETM/EC
+                if next_tag in ["XSV", "XSA"] and subsequent_tag in ["ETM", "EC"]:
+                    eomi = next_morph + subsequent_morph
+                # XSA+ETM/EC
+                else:
+                    eomi = next_morph
+
+            # continue if not VV or NNG
+            else:
+                continue
+
+            if len(root) <= 2:
+                root_stats[root][eomi] += 1
+                if josa in ['에', '을', '를', '로'] and eomi in ["한", "하여", "해", "하"]:
+                    mwp_pattern_count[root] += 1
+
+    return root_stats, mwp_pattern_count
 
 
 def main():
     ds = load_iterable_data()
-    candidates, shikida_usage, examples = analyze_mwp_candidates(ds, limit_docs=2000)
+    root_stats, mwp_pattern_count = analyze_lexicalization(ds)
 
-    print(f"\n{'Resulting MWP Candidate':<20} | {'Root':<10} | {'Shikida-Count'}")
-    print("-" * 60)
+    print(f"\n{'Root':<10} | {'Total':<6} | {'Variety':<8} | {'Fossil-Ratio'} | {'Status'}")
+    print("-" * 65)
 
-    for (part, root), count in sorted(candidates.items(), key=lambda x: x[1], reverse=True):
-        full_phrase = f"{part} {root}한"
-        s_count = shikida_usage.get(root, 0)
+    # Filter for roots that appeared at least 10 times in our target pattern
+    important_roots = [r for r, count in mwp_pattern_count.items() if count > 10]
 
-        # Negative Constraint Filter:
-        # If the root appears with '시키다' more than once, it's likely a normal verb.
-        # MWPs like '대' (from 대한) almost never appear as '대시키다'.
-        is_mwp = "True" if s_count == 0 else "False (Verb)"
+    results = []
+    for root in important_roots:
+        total_occurrences = sum(root_stats[root].values())
+        variety_count = len(root_stats[root])  # How many different things follow this root
+        fossil_ratio = mwp_pattern_count[root] / total_occurrences
 
-        if count > 2:  # Show only significant patterns
-            print(f"{full_phrase:<20} | {root:<10} | {s_count:<5} | {is_mwp}")
+        # Heuristic:
+        # MWPs usually have high fossilized ratio and high frequency
+        status = "MWP Candidate" if fossil_ratio > 0.3 and total_occurrences > 1000 else "Regular Verb/Noun"
+        results.append((root, total_occurrences, variety_count, fossil_ratio, status))
+
+    # Sort by Fossilization Ratio
+    for res in sorted(results, key=lambda x: x[1], reverse=True):
+        root, total_occurrences, variety_count, fossil_ratio, status = res
+        if total_occurrences > 30000 or total_occurrences > 10000 and fossil_ratio > 0.1:
+            if not root:
+                continue
+            print(f"{root:<10} | {total_occurrences:<6} | {variety_count:<8} | {fossil_ratio:.2f}         | {status}")
 
 
 if __name__ == "__main__":
