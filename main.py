@@ -74,7 +74,7 @@ def analyze_lexicalization(dataset, limit_docs=100000):
 
             if len(root) <= 2:
                 root_stats[root][eomi] += 1
-                if josa in ['에', '을', '를', '로'] and eomi in ["한", "하여", "해", "하"]:
+                if josa in ['에', '을', '를', '로'] and eomi in ["한", "하여", "해", "하", "하는"]:
                     mwp_pattern_count[root] += 1
 
     return root_stats, mwp_pattern_count
@@ -103,10 +103,9 @@ def main():
 
     # Sort by Fossilization Ratio
     for res in sorted(results, key=lambda x: x[1], reverse=True):
+        roots_of_interest = ["취", "속", "근거", "기반", "위시", "한", "처", "임", "반", "의거"]
         root, total_occurrences, variety_count, fossil_ratio, status = res
-        if total_occurrences > 30000 or total_occurrences > 10000 and fossil_ratio > 0.1:
-            if not root:
-                continue
+        if total_occurrences > 30000 or total_occurrences > 10000 and fossil_ratio > 0.1 or root in roots_of_interest:
             print(f"{root:<10} | {total_occurrences:<6} | {variety_count:<8} | {fossil_ratio:.2f}         | {status}")
 
 
