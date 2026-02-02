@@ -2,6 +2,7 @@ import os
 from collections import defaultdict
 from konlpy.tag import Mecab
 from datasets import load_from_disk, load_dataset
+import csv
 import json
 
 mecab = Mecab()
@@ -20,7 +21,7 @@ def extract_adpositional_mwe(pos_data):
 
     # Forms of 'Hata' to look for (add more as needed!)
     # We use this for both checking the end of a fused root AND matching a standalone token.
-    hata_forms = {'한', '하', '할', '했', '해', '함'}
+    hata_forms = ['한', '하', '할', '했', '해', '함']
 
     for i in range(n - 1):
         # --- Step 0: Anchor on the Josa ---
@@ -96,16 +97,19 @@ def filter_stats(stats_dict, threshold=10):
     return filtered_result
 
 
-def analyze_lexicalization(dataset, limit_docs=300000):
+def analyze_lexicalization(dataset, limit_docs=None):
     # root -> {mwe: count}
     mwe_stats = defaultdict(lambda: defaultdict(int))
     josa_stats = defaultdict(lambda: defaultdict(int))
     eomi_stats = defaultdict(lambda: defaultdict(int))
 
-    print(f"Analyzing {limit_docs} documents for fossilization patterns...")
+    if limit_docs is not None:
+        print(f"Analyzing {limit_docs} documents for MWE candidates...")
+    else:
+        print("Analyzing all documents for MWE candidates...")
 
     for i, entry in enumerate(dataset):
-        if i >= limit_docs: break
+        if limit_docs and i >= limit_docs: break
         pos = mecab.pos(entry['text'])
 
 
@@ -114,7 +118,7 @@ def analyze_lexicalization(dataset, limit_docs=300000):
         for candidate in candidates:
             root = candidate['root']
 
-            if root in ["하", "했"]:
+            if root in ['한', '하', '할', '했', '해', '함']:
                 continue
 
             josa = candidate['josa']
@@ -147,11 +151,32 @@ def main():
             ]
         )
 
+    sorted_results = sorted(results, key=lambda x: x[1], reverse=True)
+
     # Sort by Fossilization Ratio
-    for res in sorted(results, key=lambda x: x[1], reverse=True):
+    for res in sorted_results:
         root, total_occurrences, josa_count, eomi_count, mwe_count, mwe_ex = res
-        # if total_occurrences > 30000 or total_occurrences > 10000 and fossil_ratio > 0.1 or root in roots_of_interest:
+        # if total_occurrences > 300 and eomi_count < 20:
         print(f"{root:<10} | {total_occurrences:<6} | {josa_count:<8} | {eomi_count:<8} | {mwe_count:<8} | {', '.join(mwe_ex)}")
+
+    output_filename = "mwe_analysis_results.csv"
+
+    with open(output_filename, mode='w', newline='', encoding='utf-8-sig') as f:
+        writer = csv.writer(f)
+
+        # Write the Header
+        writer.writerow(['Root', 'Total Occurrences', 'Josa Count', 'Eomi Count', 'MWE Count', 'MWE Examples'])
+
+        # Write the Data
+        for row in sorted_results:
+            root, total, josa_c, eomi_c, mwe_c, mwe_ex_list = row
+
+            # Join the list of examples into a single string separated by commas
+            mwe_ex_str = ", ".join(mwe_ex_list)
+
+            writer.writerow([root, total, josa_c, eomi_c, mwe_c, mwe_ex_str])
+
+    print(f"\nSuccessfully saved results to {output_filename}")
 
 
 if __name__ == "__main__":
