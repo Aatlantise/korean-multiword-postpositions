@@ -3,38 +3,30 @@
 This repository accompanies the paper "A Curious Class of Adpositional Multiword Expressions in Korean"
 by Junghyun Min and Nathan Schneider.
 
-`main.py` retrieves canddates for our proposed postpositional light-verb based constructions (PLVCs) from 
-Korean Wikipedia, based on frequency, fossilization, and human input.
+`main.py` retrieves candidates for our proposed postpositional multiword expressions from 
+Korean Wikipedia.
 
-From the retrieved candidates, we manually review and determine that 16 are PLVCs.
-
-We each per our proposed taxonomy following the degree to which they are fossilized.
+From the retrieved candidates, we manually review and propose that 18 are p-MWEs.
 
 
-| PLVC                                            | Meaning | Freq/100 | Foss. |
-|-------------------------------------------------| --- | --- | --- |
-| **Fossilized PLVCs**                            ||||
-| 에 대한 ey tayhan                                  | regarding, about | 98 | 0.86 |
-| 에 의한 ey yihan                                   | by, according to | 53 | 0.90 |
-| 에 관한 ey kwanhan                                 | regarding, about | 23 | 0.67 |
-| 을 비롯한 ul pilos'han                              | such as | 12 | 0.80 |
-| 을 위시한 ul uisihan                                | such as | 0.7 | 0.59 |
-| **Lexicalized PLVCs with Limited Productivity** |  |  |  |
-| 에 반해 ey panhay†                                 | unlike | 18 | 0.04 |
-| 에 처한 ey chehan                                  | in (the situation of) | 5 | 0.13 |
-| 에 취한 ey chuihan                                 | on, under (the influence of) | 2 | 0.33 |
-| **PLVCs with productive light verb *hata***     |  |  |  |
-| 을 위한 ul wihan                                   | for (the purpose, sake of) | 109 | 0.33 |
-| 로 인한 lo inhan                                   | because of | 45 | 0.32 |
-| 을 통한 ul thonghan                                | via, through | 39 | 0.94 |
-| 에 속한 ey sok'han                                 | in (membership) | 27 | 0.11 |
-| 에 비해 ey pihay                                   | than (comparative) | 18 | 0.37 |
-| 에 반한 ey panhan†                                 | against | 18 | 0.04 |
-| 을 향한 ul hyanghan                                | towards, directed to | 11 | 0.33 |
-| 에 근거한 ey kunkehan                               | based on | 5 | 0.20 |
+| Root | Total Occ. | Josa Co. | Suffix Co. | MWE Co | Nonverb. pred? | Dist. adp?               | Forms | Homonyms |
+| :--- |:-----------|:---------|:-----------| :--- |:---------------|:-------------------------| :--- | :--- |
+| 대 | 272,022    | 27       | 11         | 57 | TRUE           | about                    | 에 대해, 에 대한, 에 대해서, 에 대하여 | 을(를) 대하다* |
+| 의 | 170,110    | 20       | 30         | 26 | TRUE           | by                       | 에 의해, 에 의한, 에 의해서, 에 의함, 에 의하여 | |
+| 통 | 122,731    | 16       | 6          | 35 | TRUE           | via, through             | 를 통해, 를 통한, 를 통해서, 를 통함, 를 통하여 | 와 통하다* |
+| 위 | 119,673    | 11       | 6          | 16 | TRUE           | for                      | 를 위해, 를 위한, 를 위해서, 를 위하여 | 를 위하다* |
+| 인 | 85,339     | 15       | 5          | 21 | TRUE           | due to                   | 로 인해, 로 인한, 로 인해서, 로 인하여 | |
+| 관 | 63,819     | 17       | 5          | 27 | TRUE           | about                    | 에 관해, 에 관한, 에 관해서, 에 관하여 | |
+| 속 | 38,378     | 14       | 12         | 34 | FALSE          | in                       | 에 속하다* | |
+| 향 | 19,777     | 10       | 6          | 32 | FALSE          | towards                  | 를 향하다*, 에게 향하다* | |
+| 비 | 18,449     | 14       | 5          | 14 | TRUE           | than                     | 에 비해, 에 비한, 에 비해서, 에 비할, 에 비하여 | 와 비하다* |
+| 불구 | 14,989     | 2        | 1          | 2 | TRUE           | although                 | 에도 불구하고 | 불구되다*, 불구가 되다* |
+| 취 | 12,267     | 16       | 6          | 46 | FALSE          | on, under (the influence | 에 취하다* | 를 취하다*, 로 취하다* |
+| 비롯 | 12,233     | 7        | 248        | 214 | TRUE           | such as                  | 를 비롯해, 를 비롯한, 를 비롯하여, | 에서 비롯하다*, 에서 비롯되다* |
+| 기 | 4,839      | 14       | 11         | 35 | FALSE          | since                    | 를 기하여, 를 기해, 를 기함 | |
+| 처 | 4,816      | 6        | 7          | 11 | FALSE          | in (the situation of)    | 에 처하다 (passive) * | 에 처하다* (active; to sentence) |
+| 반 | 3,945      | 15       | 10         | 19 | TRUE           | against                  | against: 에 반한, 에 반하는, (의지)와 반해, (의지)와 반하여; unlike: 에 반하여, 에 반해 | 에(게) 반하다* (fall for) |
+| 근거 | 2,255      | 5        | 13         | 14 | FALSE          | based on                 | 에 근거하다* | |
+| 위시 | 135        | 2        | 2          | 2 | TRUE           | such as                  | 를 위시하여, 를 위시해 | |
 
----
-
-> **Notes:** > † *에 반한 ey panhan ‘against’ and 에 반해 ey panhay ‘unlike’ share the same root and statistics.*
-
----
+Full table is available at https://georgetown1-my.sharepoint.com/:x:/g/personal/jm3743_georgetown_edu/IQCrP8s55cc3RpRpQJdzrEBTAZepvaj7keMPMOmJLiPuC-Q?e=jfJlNc.
